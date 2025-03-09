@@ -32,6 +32,7 @@ This is a sample application built in JavaScript that acts as a SAML 2.0 Service
 │   │   │   ├── Home.js       // Landing page – lists available IdP login buttons  
 │   │   │   ├── Admin.js      // Admin page – upload IdP metadata and download SP metadata  
 │   │   │   └── Dashboard.js  // Dashboard – shows identity attributes and a logout button  
+|   |   |   └── SPConfiguration.js  // Service Provider Configuration – Page to update the Service Provider configuration (e.g. encrypted assertions)
 │   │   ├── App.js            // React routing between pages  
 │   │   └── index.js          // React entry point  
 │   └── package.json          // Client dependencies and scripts  
@@ -102,12 +103,15 @@ Routing: React Router (react-router-dom) is used to manage routing between Home,
 Home Component: Fetches a list of IdPs from /api/idps and renders login buttons. Clicking a button redirects to the backend’s login endpoint.
 Admin Component: Lets administrators upload new IdP metadata and download SP metadata.
 Dashboard Component: After login, it fetches user attributes from /api/me and displays them alongside a logout button.
+Service Provider Componnent: Used for updating the Service Provider's configuration
 
 #### Further Improvements
 You might choose to persist IdP configurations in a database rather than in-memory.
 Enhance UI styling and add better error logging.
 Expand the SAML functionality (e.g., signing/authenticating requests/responses) if needed.
 Enjoy exploring and extending this SAML Service Provider App!
+Ability to persists a Service Providers configuration within the code, so it doesn't need to be generated each time
+Ability to persists a Identity Provider configuration within the code, so it doesn't need to be uploaded each time
 
 ---
 
