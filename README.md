@@ -114,6 +114,7 @@ docker image prune -a
 Dynamic Key Generation: The server dynamically generates a self-signed certificate and private key using selfsigned. These are used to create the SP metadata.
 SAML Setup: The SP is configured with its entity ID and Assertion Consumer Service (ACS) URL. Endpoints exist for initiating login (/login/:idpId), processing the SAML response (/saml/acs), and downloading metadata (/api/sp-metadata).
 IdP Management: The idpManager.js module uses xml2js to parse uploaded IdP metadata and create new IdentityProvider instances with saml2-js. It holds IdP configurations in memory.
+Metadata placed inside the idp-metadata folder will automatically be added
 
 #### Client
 Routing: React Router (react-router-dom) is used to manage routing between Home, Admin, and Dashboard pages.
@@ -128,7 +129,6 @@ Enhance UI styling and add better error logging.
 Expand the SAML functionality (e.g., signing/authenticating requests/responses) if needed.
 Enjoy exploring and extending this SAML Service Provider App!
 Ability to persists a Service Providers configuration within the code, so it doesn't need to be generated each time
-Ability to persists a Identity Provider configuration within the code, so it doesn't need to be uploaded each time
 
 ---
 
