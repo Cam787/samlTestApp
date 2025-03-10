@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 
 function Dashboard() {
   const [user, setUser] = useState(null);
   const [error,setError] = useState('');
   const [idps, setIdps] = useState([]);
+  const backend_url = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
-    axios.get(`/api/me?t=${Date.now()}`)
+    axios.get(`${backend_url}/api/me?t=${Date.now()}`)
       .then(response => {
         setUser(response.data.user);
       })
@@ -17,7 +19,7 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    axios.get('/api/idps')
+    axios.get(`${backend_url}/api/idps`)
       .then(response => {
         setIdps(response.data);
       })
@@ -30,7 +32,7 @@ function Dashboard() {
     try {
       //Time to fix 304 Not Modified response
       const encodedIdpId = encodeURIComponent(idpId);
-      const response = await axios.get(`/logout/${encodedIdpId}?t=${Date.now()}`);
+      const response = await axios.get(`${backend_url}/logout/${encodedIdpId}?t=${Date.now()}`);
       // Retrieve the logout_url from the JSON response
       const { logout_url } = response.data;
       window.location.href = logout_url;

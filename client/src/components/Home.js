@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 
 function Home() {
   const [idps, setIdps] = useState([]);
   const [error, setError] = useState('');
+  const backend_url = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
-    axios.get('/api/idps')
+    axios.get(`${backend_url}/api/idps`)
       .then(response => {
         setIdps(response.data);
       })
@@ -16,7 +18,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    axios.get('/isAlive')
+    axios.get(`${backend_url}/isAlive`)
       .then(response => {
         console.log(response.data);
       })
@@ -29,7 +31,7 @@ function Home() {
     const encodedIdpId = encodeURIComponent(idpId);
     try {
       // Make the GET call using Axios (this call will be proxied to your backend)
-      const response = await axios.get(`/login/${encodedIdpId}?t=${Date.now()}`);
+      const response = await axios.get(`${backend_url}/login/${encodedIdpId}?t=${Date.now()}`);
       // Retrieve the login_url from the JSON response
       const { login_url } = response.data;
       // Now navigate the browser to that URL (this is a full-page navigation)

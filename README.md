@@ -77,6 +77,23 @@ npm start
 The React app will typically run on port 3000. (API calls are proxied to the backend.)
 Note: In a production scenario, you can build the React app (npm run build in the client folder) and the Express server will serve the static files from the client/build directory.
 
+### 3. Running via Docker
+To run via docker execute
+```bash
+docker-compose up --build
+```
+
+Restarting the constainers can be done by
+```bash
+docker-compose down
+docker-compose up --build
+```
+
+To remove older docker images use
+```bash
+docker image prune -a
+```
+
 ### Using the Application
 #### Home Page
 - The landing page lists all available Identity Providers.

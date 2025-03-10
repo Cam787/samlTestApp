@@ -1,0 +1,27 @@
+# Use an official Node.js image as the base
+FROM node:14
+
+# Set the working directory
+WORKDIR /client
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the .env file
+COPY .env .env
+
+# Copy the rest of the application code
+COPY . .
+
+# Environment variable for the port
+ARG FRONTEND_PORT
+ENV FRONTEND_PORT=$PORT
+
+# Expose the port
+EXPOSE $PORT
+
+# Start the application
+CMD ["npm", "start"]

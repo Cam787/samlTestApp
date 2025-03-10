@@ -1,0 +1,27 @@
+# Use an official Node.js image as the base
+FROM node:14
+
+# Set the working directory
+WORKDIR /server
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the .env file
+COPY .env .env
+
+# Copy the rest of the application code
+COPY . .
+
+# Environment variable for the BACKEND_PORT
+ARG BACKEND_PORT
+ENV BACKEND_PORT=$BACKEND_PORT
+
+# Expose the BACKEND_PORT
+EXPOSE $BACKEND_PORT
+
+# Start the application
+CMD ["npm", "start"]

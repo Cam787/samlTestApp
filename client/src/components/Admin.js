@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 
 function Admin() {
   const [file, setFile] = useState(null);
   const [uploadMessage, setUploadMessage] = useState('');
+  const backend_url = process.env.REACT_APP_BACKEND_URL;
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -17,7 +19,7 @@ function Admin() {
     const formData = new FormData();
     formData.append('metadata', file);
 
-    axios.post("/api/admin/upload-metadata", formData)
+    axios.post(`${backend_url}/api/admin/upload-metadata`, formData)
       .then(response => {
         setUploadMessage("Metadata uploaded successfully.");
       })
@@ -28,7 +30,7 @@ function Admin() {
 
   const handleDownload = () => {
     // Download the SP metadata.
-    axios.get('/api/sp-metadata', { responseType: 'blob' })
+    axios.get(`${backend_url}/api/sp-metadata`, { responseType: 'blob' })
       .then(response => {
         const url = window.URL.createObjectURL(new Blob([response.data], { type: 'xml' }));
         const link = document.createElement('a');

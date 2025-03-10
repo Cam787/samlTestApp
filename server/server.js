@@ -9,12 +9,34 @@ const path = require('path');
 const saml2 = require('saml2-js');
 const selfsigned = require('selfsigned');
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-const PORT = process.env.PORT || 3001;
+const BACKEND_PORT = process.env.BACKEND_PORT || 3001;
+const cors = require('cors');
+const fs = require('fs');
 
 const { addIdpFromMetadata, getIdp, listIdps } = require('./idpManager');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
+
+// Enable CORS for all routes
+const corsOptions = {
+  origin: `${frontendUrl}`,
+  credentials: true
+};
+
+// Session configuration
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: false,
+    httpOnly: true
+  }
+})
+)
+
+app.use(cors(corsOptions));
 
 // Setup body parsers.
 app.use(bodyParser.json());
@@ -35,6 +57,34 @@ app.use((req, res, next) => {
   next();
 });
 
+// Pre-load IdP metadata at startup
+const idpMetadataDir = path.join(__dirname, 'idp-metadata');
+fs.readdir(idpMetadataDir, (err, files) => {
+  if (err) {
+    console.error('Error reading IdP metadata directory:', err);
+    return;
+  }
+
+  files.forEach(file => {
+    if (path.extname(file) === '.xml') {
+      const filePath = path.join(idpMetadataDir, file);
+      fs.readFile(filePath, 'utf8', (readErr, data) => {
+        if (readErr) {
+          console.error('Error reading IdP metadata file:', readErr);
+        } else {
+          addIdpFromMetadata(data, (parseErr, idpData) => {
+            if (parseErr) {
+              console.error('Error parsing IdP metadata:', parseErr);
+            } else {
+              console.log(`IdP pre-loaded: ${idpData.displayName}`);
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
 // --------------------
 // Dynamically generate certificate and key.
 const attrs = [{ name: 'commonName', value: 'localhost' }];
@@ -44,10 +94,10 @@ var wantEncrypted = true
 
 // Create our Service Provider (SP).
 const sp_options = {
-  entity_id: `http://localhost:${PORT}/metadata`,
+  entity_id: `http://localhost:${BACKEND_PORT}/metadata`,
   private_key: pems.private,
   certificate: pems.cert,
-  assert_endpoint: `http://localhost:${PORT}/saml/acs`,
+  assert_endpoint: `http://localhost:${BACKEND_PORT}/saml/acs`,
   allow_unencrypted_assertion: wantEncrypted, // this value comes from your configuration.
 };
 const sp = new saml2.ServiceProvider(sp_options);
@@ -234,6 +284,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+app.listen(BACKEND_PORT, () => {
+  console.log(`Server listening on BACKEND_PORT ${BACKEND_PORT}`);
 });

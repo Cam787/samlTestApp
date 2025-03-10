@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
+
 
 function SPConfiguration() {
   const [wantEncrypted, setWantEncrypted] = useState(false);
   const [message, setMessage] = useState('');
+  const backend_url = process.env.REACT_APP_BACKEND_URL;
 
   const handleRadioChange = (event) => {
     setWantEncrypted(event.target.value === 'true');
@@ -12,7 +15,7 @@ function SPConfiguration() {
   const handleSave = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('/api/sp-config', { wantEncrypted });
+      const response = await axios.post(`${backend_url}/api/sp-config`, { wantEncrypted });
       setMessage(response.data.message);
     } catch (error) {
       setMessage('Error updating configuration: ' + error.message);
