@@ -33,9 +33,39 @@ function Home() {
       // Make the GET call using Axios (this call will be proxied to your backend)
       const response = await axios.get(`${backend_url}/login/${encodedIdpId}?t=${Date.now()}`);
       // Retrieve the login_url from the JSON response
-      const { login_url } = response.data;
-      // Now navigate the browser to that URL (this is a full-page navigation)
-      window.location.href = login_url;
+      const login_url = response.data.login_url;
+      const samlRequest = response.data.samlRequest;
+      const relayState = response.data.relayState;
+      
+      // Ensure the variables are correctly initialized and not undefined
+      if (!login_url || !samlRequest) {
+        throw new Error('Missing required parameters from the response.');
+      }
+
+      // Create a form element
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = login_url;
+
+      // Create a hidden input field for the SAML Request
+      const inputSAMLRequest = document.createElement('input');
+      inputSAMLRequest.type = 'hidden';
+      inputSAMLRequest.name = 'SAMLRequest';
+      inputSAMLRequest.value = samlRequest;
+      form.appendChild(inputSAMLRequest);
+
+      if (relayState) {
+        // Create a hidden field for the relayState
+        const inputRelayState = document.createElement('input');
+        inputRelayState.type = 'hidden';
+        inputRelayState.name = 'RelayState';
+        inputRelayState.value = relayState;
+        form.appendChild(inputRelayState)
+      }
+      
+      // Append the form to the body and submit it
+      document.body.appendChild(form);
+      form.submit();
     } catch (error) {
       alert('Error performing login: ' + error.message);
     }
@@ -51,7 +81,7 @@ function Home() {
         {idps.map(idp => (
           <li key={idp.id}>
             <button onClick={() => handleLogin(idp.id)}>
-              Login with {idp.displayName}
+              Login with {idp.id}
             </button>
           </li>
         ))}

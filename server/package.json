@@ -7,13 +7,18 @@
     },
     "dependencies": {
       "body-parser": "^1.19.0",
+      "cors": "^2.8.5",
+      "crypto": "^1.0.1",
       "express": "^4.17.1",
       "express-session": "^1.17.1",
+      "fs": "0.0.1-security",
       "multer": "^1.4.2",
-      "saml2-js": "^2.0.0",
-      "xml2js": "^0.4.23",
-      "selfsigned": "^1.10.14",
-      "dotenv":"^16.4.7",
-      "cors":"^2.8.5"
+      "path": "^0.12.7",
+      "samlify": "^2.7.3",
+      "selfsigned": "^1.10.11",
+      "xml2js": "^0.4.23"
+    },
+    "devDependencies": {
+      "dotenv": "^8.2.0"
     }
   }  
